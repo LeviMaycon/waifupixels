@@ -1,68 +1,60 @@
 'use client'
 
-import { Home, Star, ZodiacScorpio, ZodiacVirgo } from "lucide-react";
+import { Clapperboard, Home, Star, ZodiacScorpio, ZodiacVirgo } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts"; 
-import { SideBarItemProps } from "./types";
 import { SideBarDesktop } from "./SideBarDesktop";
 import { SideBarMobile } from "./SideBarMobile";
+import { SideBarItemProps } from "./types";
+import { useState, useEffect } from "react";
 
 const sidebarItems: SideBarItemProps[] = [
-    { label: 'Home', href: '/', icon: Home },
+    { label: 'Home', href: '/', icon: Home, active: true },
     {
-        label: 'SFW',
-        href: '/sfw',
+        label: 'Waifu',
+        href: '/waifu',
         icon: ZodiacScorpio,
+        active: true,
         children: [
-            { label: 'WAIFU', href: '/sfw/waifu', icon: '' },
-            { label: 'NEKO', href: '/sfw/neko', icon: '' },
-            { label: 'SHINOBU', href: '/sfw/shinobu', icon: '' },
-            { label: 'MEGUMIN', href: '/sfw/megumin', icon: '' },
-            { label: 'BULLY', href: '/sfw/bully', icon: '' },
-            { label: 'CUDDLE', href: '/sfw/cuddle', icon: '' },
-            { label: 'CRY', href: '/sfw/cry', icon: '' },
-            { label: 'HUG', href: '/sfw/hug', icon: '' },
-            { label: 'AWOO', href: '/sfw/awoo', icon: '' },
-            { label: 'KISS', href: '/sfw/kiss', icon: '' },
-            { label: 'LICK', href: '/sfw/lick', icon: '' },
-            { label: 'PAT', href: '/sfw/pat', icon: '' },
-            { label: 'SMUG', href: '/sfw/smug', icon: '' },
-            { label: 'BONK', href: '/sfw/bonk', icon: '' },
-            { label: 'YEET', href: '/sfw/yeet', icon: '' },
-            { label: 'BLUSH', href: '/sfw/blush', icon: '' },
-            { label: 'SMILE', href: '/sfw/smile', icon: '' },
-            { label: 'WAVE', href: '/sfw/wave', icon: '' },
-            { label: 'HIGHFIVE', href: '/sfw/highfive', icon: '' },
-            { label: 'HANDHOLD', href: '/sfw/handhold', icon: '' },
-            { label: 'NOM', href: '/sfw/nom', icon: '' },
-            { label: 'BITE', href: '/sfw/bite', icon: '' },
-            { label: 'GLOMP', href: '/sfw/glomp', icon: '' },
-            { label: 'SLAP', href: '/sfw/slap', icon: '' },
-            { label: 'KILL', href: '/sfw/kill', icon: '' },
-            { label: 'KICK', href: '/sfw/kick', icon: '' },
-            { label: 'HAPPY', href: '/sfw/happy', icon: '' },
-            { label: 'WINK', href: '/sfw/wink', icon: '' },
-            { label: 'POKE', href: '/sfw/poke', icon: '' },
-            { label: 'DANCE', href: '/sfw/dance', icon: '' },
-            { label: 'CRINGE', href: '/sfw/cringe', icon: '' },
+            { label: 'WAIFU',   href: '/waifu/sfw/waifu',    icon: '', active: true },
+            { label: 'NEKO',    href: '/waifu/sfw/neko',     icon: '', active: true },
+            { label: 'SHINOBU', href: '/waifu/sfw/shinobu',  icon: '', active: true },
+            { label: 'MEGUMIN', href: '/waifu/sfw/megumin',  icon: '', active: true },
+            { label: 'HUG',     href: '/waifu/sfw/hug',      icon: '', active: true },
+            { label: 'KISS',    href: '/waifu/sfw/kiss',     icon: '', active: true },
+            { label: 'PAT',     href: '/waifu/sfw/pat',      icon: '', active: true },
+            { label: 'CUDDLE',  href: '/waifu/sfw/cuddle',   icon: '', active: true },
+            { label: 'CRY',     href: '/waifu/sfw/cry',      icon: '', active: true },
+            { label: 'BLUSH',   href: '/waifu/sfw/blush',    icon: '', active: true },
+            { label: 'SMILE',   href: '/waifu/sfw/smile',    icon: '', active: true },
+            { label: 'WAVE',    href: '/waifu/sfw/wave',     icon: '', active: true },
+            { label: 'DANCE',   href: '/waifu/sfw/dance',    icon: '', active: true },
+            { label: 'WINK',    href: '/waifu/sfw/wink',     icon: '', active: true },
+            { label: 'POKE',    href: '/waifu/sfw/poke',     icon: '', active: true },
         ]
     },
     {
-        label: 'NSFW',
-        href: '/nsfw',
+        label: 'Nekos',
+        href: '/nekos',
         icon: ZodiacVirgo,
+        active: true,
         children: [
-            { label: 'WAIFU', href: '/nsfw/waifu', icon: '' },
-            { label: 'NEKO', href: '/nsfw/neko', icon: '' },
-            { label: 'TRAP', href: '/nsfw/trap', icon: '' },
-            { label: 'BLOWJOB', href: '/nsfw/blowjob', icon: '' },
+            { label: 'Explorar SFW',  href: '/nekos/explore',      icon: '', active: true },
         ]
     },
-    { label: 'Favorites', href: '/favorites', icon: Star }
-];
+    { label: 'Reels', href: '/reels', icon: Clapperboard, active: false },
+    { label: 'Favorites', href: '/favorites', icon: Star, active: true },
+]
 
 export default function SideBar() {
-    const isDesktop = useMediaQuery('(min-width: 640px)', {initializeWithValue: undefined,});
-    if (isDesktop) return <SideBarDesktop sidebarItems={sidebarItems} />;
+    const [mounted, setMounted] = useState(false)
+    const isDesktop = useMediaQuery('(min-width: 640px)', { initializeWithValue: false })
 
-    return <SideBarMobile sidebarItems={sidebarItems}/>;
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return null
+
+    if (isDesktop) return <SideBarDesktop sidebarItems={sidebarItems} />
+    return <SideBarMobile sidebarItems={sidebarItems} />
 }

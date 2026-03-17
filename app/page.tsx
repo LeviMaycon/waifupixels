@@ -1,117 +1,110 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation'
-import Pagination from '@/src/components/ui/Pagination';
-import ImageCard from '@/src/components/ui/Card';
-import SideBar from '@/src/components/SideBar';
-import ImageCardSkeleton from '@/src/components/ui/ImageCardSkeleton';
+import Link from 'next/link'
+import SideBar from '@/src/components/SideBar'
 
-interface ImageData { url: string }
-
-const ITEMS_PER_PAGE = 100;
+const waifuCategories = [
+  { label: 'Waifu', href: '/waifu/sfw/waifu' },
+  { label: 'Neko', href: '/waifu/sfw/neko' },
+  { label: 'Shinobu', href: '/waifu/sfw/shinobu' },
+  { label: 'Megumin', href: '/waifu/sfw/megumin' },
+  { label: 'Hug', href: '/waifu/sfw/hug' },
+  { label: 'Kiss', href: '/waifu/sfw/kiss' },
+  { label: 'Pat', href: '/waifu/sfw/pat' },
+  { label: 'Cuddle', href: '/waifu/sfw/cuddle' },
+  { label: 'Cry', href: '/waifu/sfw/cry' },
+  { label: 'Blush', href: '/waifu/sfw/blush' },
+  { label: 'Smile', href: '/waifu/sfw/smile' },
+  { label: 'Wave', href: '/waifu/sfw/wave' },
+  { label: 'Dance', href: '/waifu/sfw/dance' },
+  { label: 'Wink', href: '/waifu/sfw/wink' },
+  { label: 'Poke', href: '/waifu/sfw/poke' },
+]
 
 export default function Home() {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const currentPage = Number(searchParams.get('page')) || 1
-
-  const [allImages, setAllImages] = useState<ImageData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function loadAllImages() {
-      setLoading(true)
-      try {
-        const totalToLoad = 40;
-        const promises = Array.from({ length: totalToLoad }, () =>
-          fetch('/api/search').then(res => res.json())
-        )
-        const results = await Promise.all(promises)
-        const images = results.map(r => ({ url: r.image })).filter(Boolean)
-        setAllImages(images)
-      } catch (err) {
-        setError("Erro ao carregar imagens")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadAllImages()
-  }, [])
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const paginatedImages = allImages.slice(startIndex, startIndex + ITEMS_PER_PAGE)
-  const totalPages = Math.ceil(allImages.length / ITEMS_PER_PAGE)
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return
-    const params = new URLSearchParams(searchParams)
-    params.set('page', page.toString())
-    router.push(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  const openModal = (url: string) => setSelectedImage(url)
-  const closeModal = () => setSelectedImage(null)
-
-  if (loading) return <div className="p-8 text-center">Carregando galeria...</div>
-  if (error) return <div className="p-8 text-red-600">{error}</div>
-
   return (
-    <div className='flex min-h-screen'>
-      <SideBar/>
-      <main className="flex-1 p-2">
-        <h1 className="text-3xl text-white font-bold mb-8 text-center">Galeria de Imagens</h1>
+    <div className="flex min-h-screen bg-[#0a0a0f]">
+      <SideBar />
+      <main className="flex-1 mt-16 sm:mt-0 sm:ml-72">
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-          {loading
-            ? Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
-                <ImageCardSkeleton key={i} />
-              ))
-            : paginatedImages.map((img, idx) => (
-                <ImageCard
-                  key={startIndex + idx}
-                  url={img.url}
-                  onClick={() => openModal(img.url)}
-                />
-              ))
-          }
-        </div>
-        
-        {!loading && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={goToPage}
-          />
-        )}
-
-        {selectedImage && (
+        <section className="relative flex flex-col items-center justify-center text-center px-6 py-28 overflow-hidden">
           <div
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-            onClick={closeModal}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(168,85,247,0.08) 0%, transparent 70%)',
+            }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px),
+                            repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px)`,
+            }}
+          />
+
+          <p
+            className="text-[11px] tracking-[0.4em] text-white/30 uppercase mb-6"
+            style={{ animation: 'fadeUp 0.6s ease both' }}
           >
-            <div className="relative max-w-5xl max-h-[90vh]" onClick={e => e.stopPropagation()}>
-              <button
-                className="absolute -top-12 right-4 text-white text-5xl hover:text-gray-300"
-                onClick={closeModal}
-              >
-                ×
-              </button>
-              <img
-                src={selectedImage}
-                alt="Ampliada"
-                className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
-              />
-            </div>
+            Galeria de imagens anime
+          </p>
+
+          <h1
+            className="text-6xl sm:text-8xl font-black text-white leading-none tracking-tighter mb-6"
+            style={{ animation: 'fadeUp 0.6s ease 0.1s both' }}
+          >
+            Waifu
+            <span className="text-white/10"> Pixels</span>
+          </h1>
+
+          <p
+            className="text-white/30 text-sm max-w-xs leading-relaxed mb-10"
+            style={{ animation: 'fadeUp 0.6s ease 0.2s both' }}
+          >
+            Explore centenas de ilustrações anime organizadas por categoria
+          </p>
+
+          <Link
+            href="/nekos/explore"
+            className="px-7 py-3 text-sm font-medium text-white/70 border border-white/10 rounded-full hover:bg-white/5 hover:text-white transition-all duration-200"
+            style={{ animation: 'fadeUp 0.6s ease 0.3s both' }}
+          >
+            Explorar Nekos →
+          </Link>
+        </section>
+
+        <section className="px-6 pb-20 max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-8">
+            <span className="text-[10px] tracking-[0.3em] text-white/20 uppercase">Categorias Waifu</span>
+            <div className="flex-1 h-px bg-white/5" />
           </div>
-        )}
-      
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {waifuCategories.map((cat, idx) => (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="group relative flex items-center justify-center px-4 py-6 border border-white/6 rounded-sm hover:border-white/20 hover:bg-white/3 transition-all duration-200"
+                style={{ animation: `fadeUp 0.5s ease ${0.05 * idx}s both` }}
+              >
+                <span className="text-xs font-semibold tracking-[0.2em] text-white/40 uppercase group-hover:text-white/80 transition-colors duration-200">
+                  {cat.label}
+                </span>
+                <span
+                  className="absolute top-2 right-2 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ borderTop: '1px solid rgba(255,255,255,0.3)', borderRight: '1px solid rgba(255,255,255,0.3)' }}
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <style>{`
+                    @keyframes fadeUp {
+                        from { opacity: 0; transform: translateY(16px); }
+                        to   { opacity: 1; transform: translateY(0); }
+                    }
+                `}</style>
       </main>
     </div>
   )

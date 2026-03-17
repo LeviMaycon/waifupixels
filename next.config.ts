@@ -1,7 +1,19 @@
-import type { NextConfig } from "next";
+const nextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+        ],
+      },
+    ]
+  },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'i.waifu.pics' },
+    ],
+  },
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+export default nextConfig

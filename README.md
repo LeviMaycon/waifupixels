@@ -3,15 +3,23 @@
 waifupixels
 ├─ app
 │  ├─ api
-│  │  ├─ search
+│  │  ├─ nekos
 │  │  │  └─ route.ts
-│  │  └─ [type]
-│  │     └─ [category]
-│  │        └─ page.tsx
+│  │  └─ waifu
+│  │     └─ route.ts
 │  ├─ favicon.ico
 │  ├─ globals.css
 │  ├─ layout.tsx
-│  └─ page.tsx
+│  ├─ nekos
+│  │  └─ explore
+│  │     ├─ nsfw
+│  │     │  └─ page.tsx
+│  │     └─ page.tsx
+│  ├─ page.tsx
+│  └─ waifu
+│     └─ [type]
+│        └─ [category]
+│           └─ page.tsx
 ├─ components.json
 ├─ eslint.config.mjs
 ├─ lib
@@ -27,6 +35,7 @@ waifupixels
 │  └─ components
 │     ├─ SideBar.tsx
 │     ├─ SideBarDesktop.tsx
+│     ├─ SidebarLink.tsx
 │     ├─ SideBarMobile.tsx
 │     ├─ types.ts
 │     └─ ui
