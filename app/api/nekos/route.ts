@@ -5,8 +5,8 @@ export async function GET(req: NextRequest) {
 
     const tags = searchParams.get('tags') || ''
     const rating = searchParams.get('rating') || 'safe'
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : 30
-    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : 0
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 200) : 200
+    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 200) : 0
     const random = searchParams.get('random') === 'true'
 
     if (random) {

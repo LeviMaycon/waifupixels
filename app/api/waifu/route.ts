@@ -10,9 +10,9 @@ export async function GET(req: NextRequest) {
     const rating = searchParams.get('rating')?.split(',') || [];
     const tags = searchParams.get('tags')?.split(',') || [];
     const without_tags = searchParams.get('without_tags')?.split(',') || [];
-    const artist = searchParams.get('artist')?.split(',').map(a => parseInt(a, 10)) || [];
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : undefined;
-    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : undefined;
+    const artist = searchParams.get('artist')?.split(',').map(a => parseInt(a, 200)) || [];
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 200) : undefined;
+    const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 200) : undefined;
 
     const params = new URLSearchParams();
     if (category) params.append('category', category);
